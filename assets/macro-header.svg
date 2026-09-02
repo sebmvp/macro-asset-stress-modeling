@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="196" viewBox="0 0 860 196" role="img" aria-label="Macro Stress and Asset Behavior — Gold, SPY, and Bitcoin across macro-financial stress regimes">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0b16"/>
+      <stop offset="1" stop-color="#151126"/>
+    </linearGradient>
+    <pattern id="grid" width="43" height="49" patternUnits="userSpaceOnUse">
+      <path d="M43 0H0V49" fill="none" stroke="#241d3d" stroke-width="1" stroke-opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <rect width="860" height="196" rx="10" fill="url(#bg)"/>
+  <rect width="860" height="196" rx="10" fill="url(#grid)"/>
+  <rect width="860" height="196" rx="10" fill="none" stroke="#2e2650" stroke-width="1.5"/>
+
+  <!-- left accent rule -->
+  <rect x="28" y="30" width="4" height="136" rx="2" fill="#8b5cf6"/>
+
+  <!-- title block -->
+  <circle cx="52" cy="44" r="4" fill="#8b5cf6"/>
+  <text x="64" y="49" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#9a92b2" letter-spacing="2">compsci 390b · group research</text>
+
+  <text x="48" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="31" font-weight="700" fill="#f4f1ff" letter-spacing="0.5">Macro Stress &amp; Asset Behavior</text>
+
+  <text x="48" y="124" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="600" fill="#a78bfa" letter-spacing="0.2">Does Gold protect you in a crisis — and does Bitcoin act anything like it?</text>
+
+  <text x="48" y="152" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" fill="#9a92b2" letter-spacing="0.3">4,150 daily observations · Gold / SPY / BTC · stress regimes · walk-forward validation</text>
+
+  <!-- mini chart: stress region + three asset lines -->
+  <g transform="translate(608, 34) scale(0.82)">
+    <!-- stress regime band -->
+    <rect x="88" y="8" width="66" height="118" fill="#8b5cf6" fill-opacity="0.14"/>
+    <line x1="88" y1="8" x2="88" y2="126" stroke="#8b5cf6" stroke-opacity="0.5" stroke-dasharray="3 3"/>
+    <line x1="154" y1="8" x2="154" y2="126" stroke="#8b5cf6" stroke-opacity="0.5" stroke-dasharray="3 3"/>
+    <text x="121" y="140" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#a78bfa">stress</text>
+
+    <!-- zero line -->
+    <line x1="0" y1="70" x2="220" y2="70" stroke="#3a3160" stroke-width="1"/>
+
+    <!-- SPY: drops hard in stress -->
+    <polyline points="0,52 30,48 60,56 88,58 100,86 120,104 140,96 154,88 180,66 220,58"
+      fill="none" stroke="#67e8f9" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- BTC: drops harder, recovers harder -->
+    <polyline points="0,60 30,44 60,64 88,62 100,108 120,124 140,112 154,96 180,54 220,38"
+      fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="5 3" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- Gold: holds through stress -->
+    <polyline points="0,58 30,54 60,60 88,62 100,64 120,60 140,58 154,56 180,52 220,50"
+      fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- legend -->
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10">
+      <line x1="166" y1="16" x2="182" y2="16" stroke="#a78bfa" stroke-width="2.5"/><text x="186" y="20" fill="#9a92b2">gold</text>
+      <line x1="166" y1="30" x2="182" y2="30" stroke="#67e8f9" stroke-width="2"/><text x="186" y="34" fill="#9a92b2">spy</text>
+      <line x1="166" y1="44" x2="182" y2="44" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="4 3"/><text x="186" y="48" fill="#9a92b2">btc</text>
+    </g>
+  </g>
+</svg>
