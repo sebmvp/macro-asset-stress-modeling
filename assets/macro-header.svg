@@ -2,7 +2,7 @@
   <rect width="860" height="132" rx="8" fill="#0c0b12"/>
   <rect width="860" height="132" rx="8" fill="none" stroke="#2c2838" stroke-width="1"/>
 
-  <text x="36" y="42" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#8a8498" letter-spacing="1.4">COMPSCI 390B · GROUP RESEARCH</text>
+  <text x="36" y="42" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#8a8498" letter-spacing="1.4">RESEARCH · COMPSCI 390B</text>
   <text x="36" y="76" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="26" font-weight="600" fill="#f2f0f7" letter-spacing="-0.4">Macro Stress &amp; Asset Behavior</text>
   <text x="36" y="104" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" fill="#a78bfa">Does Gold protect you in a crisis — and does Bitcoin?</text>
 
