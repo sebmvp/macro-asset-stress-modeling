@@ -1,0 +1,95 @@
+{
+  "comment": "Published checksums from the May 2026 CompSci 390B report. Reconstruction is not tuned to hit these.",
+  "items": [
+    {
+      "id": "m1_gold_zero_rmse",
+      "stage": "milestone1",
+      "value": 0.010732,
+      "note": "Next-day Gold log-return, zero baseline RMSE"
+    },
+    {
+      "id": "m1_gold_ridge_rmse",
+      "stage": "milestone1",
+      "value": 0.010764,
+      "note": "Ridge did not beat the zero baseline"
+    },
+    {
+      "id": "m1_vol_persistence_rmse",
+      "stage": "milestone1",
+      "value": 0.024754,
+      "note": "SPY 30d vol, h=5, persistence RMSE"
+    },
+    {
+      "id": "m1_vol_ridge_rmse",
+      "stage": "milestone1",
+      "value": 0.021671,
+      "note": "SPY 30d vol, h=5, Ridge RMSE"
+    },
+    {
+      "id": "m1_vol_rf_rmse",
+      "stage": "milestone1",
+      "value": 0.024669,
+      "note": "SPY 30d vol, h=5, RandomForest RMSE"
+    },
+    {
+      "id": "e_xgb_roc_auc",
+      "stage": "final",
+      "value": 0.6835,
+      "note": "Model E XGBoost ROC-AUC on chronological test"
+    },
+    {
+      "id": "e_logit_roc_auc",
+      "stage": "final",
+      "value": 0.6091,
+      "note": "Model E class-balanced logistic ROC-AUC"
+    },
+    {
+      "id": "e_test_n",
+      "stage": "final",
+      "value": 822,
+      "note": "Model E test rows 2023-11-26 through 2026-02-24"
+    },
+    {
+      "id": "e_positive_rate",
+      "stage": "final",
+      "value": 0.383,
+      "note": "Gold > SPY rate on the Model E test window"
+    },
+    {
+      "id": "f_spy_h1_persistence_rmse",
+      "stage": "final",
+      "value": 0.0099,
+      "note": "Slow-moving vol: persistence is already strong"
+    },
+    {
+      "id": "f_spy_h5_ridge_rmse",
+      "stage": "final",
+      "value": 0.0210,
+      "note": "Ridge beat XGBoost on SPY vol h=5"
+    },
+    {
+      "id": "f_vix_h5_xgb_rmse",
+      "stage": "final",
+      "value": 5.5236,
+      "note": "XGBoost negative-R2 failure on VIX h=5"
+    },
+    {
+      "id": "g_logit_pr_auc",
+      "stage": "final",
+      "value": 0.7095,
+      "note": "Model G class-balanced logistic PR-AUC on stress_any h=5"
+    },
+    {
+      "id": "g_majority_pr_auc",
+      "stage": "final",
+      "value": 0.2433,
+      "note": "Base rate / majority PR-AUC"
+    },
+    {
+      "id": "wf_mean_roc_auc",
+      "stage": "final",
+      "value": 0.6571,
+      "note": "Expanding-window Model E mean ROC-AUC 2019-2026"
+    }
+  ]
+}

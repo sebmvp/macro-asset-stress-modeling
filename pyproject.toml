@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "macro-stress"
+version = "0.1.0"
+description = "Reproducibility packaging for the CompSci 390B macro-stress / safe-haven project."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Sebastian Vaskes Pimentel" },
+]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.4",
+  "xgboost>=2.0",
+  "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+full = ["lightgbm>=4.0", "catboost>=1.2", "shap>=0.45", "imbalanced-learn>=0.12"]
+
+[project.scripts]
+macro-stress-reproduce = "macro_stress.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

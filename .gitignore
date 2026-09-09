@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Canonical Kaggle extract — do not commit (CC BY-NC-SA; acquire locally)
+data/*.csv
+data/*.zip
+!data/README.md
+
+# Local reproduce output (committed copies live under results/historical/)
+results/latest/
+figures/reproduced/
