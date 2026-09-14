@@ -1,0 +1,213 @@
+{
+  "slide_size": "16:9",
+  "slides": [
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Hello — I'm Sebastian. This is a CompSci 390B group project on Gold, SPY, and Bitcoin under macro stress. The question is simple: when markets get stressed, does Gold actually protect capital, and does Bitcoin behave like digital Gold? A safe haven isn't an asset with a nice average return. It's an asset that defends exactly when equities are under pressure. I worked on model design and evaluation. Dhruv built most of the empirical pipeline. Nathan led the written report.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.7, "top": 1.35, "width": 4.4, "height": 0.42, "fill": "16141F", "text": "COMPSCI 390B  ·  SPRING 2026", "text_color": "A78BFA"},
+        {"type": "rounded_rectangle", "left": 0.7, "top": 2.0, "width": 12.0, "height": 1.15, "fill": "0C0B12", "text": "Does Gold actually protect capital under macro stress?", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.7, "top": 3.2, "width": 12.0, "height": 0.7, "fill": "0C0B12", "text": "And does Bitcoin behave like digital Gold?", "text_color": "A78BFA"},
+        {"type": "rounded_rectangle", "left": 0.7, "top": 4.4, "width": 12.0, "height": 0.55, "fill": "16141F", "text": "Sebastian Vaskes Pimentel  ·  Dhruv Kartik  ·  Nathan Dennis", "text_color": "8A8498"},
+        {"type": "rounded_rectangle", "left": 0.7, "top": 6.35, "width": 12.0, "height": 0.5, "fill": "16141F", "text": "Takeaway: a safe haven has to defend exactly when equities are under pressure.", "text_color": "C4B5FD"}
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "We used 4,150 daily observations, October 2014 through February 2026, from a public Kaggle panel. Gold, SPY, Bitcoin, plus VIX, high-yield spreads, and a financial stress index. Log returns, because prices weren't stationary. Stress is the 66th percentile of three proxies. About a third of days trip each flag. stress_any is 56% of days; stress_all is 14%. We re-ran the tests at the 75th and 90th percentiles. If a finding only exists at one cutoff, we don't trust it.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.28, "width": 12.2, "height": 0.55, "fill": "0C0B12", "text": "4,150 days · Gold, SPY, Bitcoin · 66th-percentile stress flags", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.9, "width": 12.2, "height": 0.4, "fill": "0C0B12", "text": "2014-10-17 to 2026-02-25. Log returns. Multiple definitions so a finding has to survive more than one cutoff.", "text_color": "8A8498"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: 66th percentile isolates elevated stress without emptying the sample.", "text_color": "C4B5FD"}
+      ],
+      "tables": [
+        {
+          "left": 0.55, "top": 1.55, "width": 12.2, "height": 4.6,
+          "rows": [
+            ["Regime", "Rule", "Share of days"],
+            ["stress_hys", "High-yield spread ≥ 4.400", "34.2%"],
+            ["stress_fsi", "Financial stress index ≥ −0.172", "34.1%"],
+            ["stress_vix", "VIX ≥ 19.060", "34.0%"],
+            ["stress_any", "At least one flag", "56.3%"],
+            ["stress_all", "All three flags", "14.3%"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Milestone 1 tried to predict next-day Gold returns. Ridge could not beat a zero baseline. Volatility was a different story — persistence and Ridge already had R-squared in the 0.87 to 0.90 range on five-day SPY vol. So we stopped asking can we predict Gold tomorrow, and started asking when does Gold actually behave defensively, and under what kind of stress? That turn is the project.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.28, "width": 12.2, "height": 0.55, "fill": "0C0B12", "text": "EDA changed the question", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: we stopped forecasting daily Gold and asked when Gold actually defends.", "text_color": "C4B5FD"}
+      ],
+      "tables": [
+        {
+          "left": 0.55, "top": 1.2, "width": 12.2, "height": 4.8,
+          "rows": [
+            ["Attempt", "Result"],
+            ["Next-day Gold log return (Ridge)", "RMSE 0.010764 — did not beat a zero baseline (0.010732)"],
+            ["SPY 30d vol, h=5 (persistence)", "RMSE ~0.0248"],
+            ["SPY 30d vol, h=5 (Ridge)", "RMSE ~0.0210  ·  R² ~0.9046 in the later pipeline"],
+            ["What we did next", "Define stress regimes and test Gold as a conditional safe haven"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Under VIX stress, Gold's mean daily log return is +0.00068. SPY is minus 0.00092. The Gold–SPY spread widens by 0.00247, and the bootstrap interval excludes zero. Composite stress looks the same direction, weaker. Financial-stress-index stress does not show a Gold advantage. Takeaway: Gold is a conditional safe haven, not a universal one. Volatility-style stress is where the defensive behavior shows up.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.28, "width": 12.2, "height": 0.55, "fill": "0C0B12", "text": "Gold is a conditional safe haven", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: VIX stress shows a Gold advantage; FSI stress does not.", "text_color": "C4B5FD"}
+      ],
+      "tables": [
+        {
+          "left": 0.55, "top": 1.15, "width": 12.2, "height": 5.0,
+          "rows": [
+            ["Regime", "Gold", "SPY", "BTC", "Gold–SPY widening", "CI lower bound"],
+            ["stress_vix", "+0.00068", "−0.00092", "−0.00008", "+0.00247", "+0.00157"],
+            ["stress_any", "—", "—", "—", "+0.00096", "+0.00029"],
+            ["stress_all", "—", "—", "—", "+0.00191", "+0.00040"],
+            ["stress_fsi", "—", "—", "—", "−0.00012", "no Gold advantage"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "When stress_any is on, Gold vol rises 25 percent. SPY vol rises 78 percent. Bitcoin sits near 61 percent in both regimes. Unchanged Bitcoin vol is not defensiveness — it's always violent. Gold's beta to SPY falls in stress, 0.16 to 0.02. Bitcoin's beta rises, 0.67 to 0.86. Bitcoin shares more of SPY's worst 5 percent days than Gold does. I would not call Bitcoin digital Gold on this sample.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Volatility, beta, Bitcoin", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: Gold becomes less equity-sensitive in stress. Bitcoin becomes more.", "text_color": "C4B5FD"}
+      ],
+      "images": [
+        {"path": "figures/fig1-volatility-by-regime.png", "left": 0.45, "top": 0.9, "width": 6.6}
+      ],
+      "tables": [
+        {
+          "left": 7.2, "top": 1.05, "width": 5.6, "height": 5.0,
+          "rows": [
+            ["", "Calm", "Stress"],
+            ["Gold β to SPY", "+0.157", "+0.020"],
+            ["BTC β to SPY", "+0.666", "+0.862"],
+            ["Gold 30d vol", "0.104", "0.130"],
+            ["SPY 30d vol", "0.085", "0.152"],
+            ["BTC 30d vol", "0.608", "0.610"],
+            ["Worst-5% overlap w/ SPY", "Gold 13.5%", "BTC 16.3%"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "COVID 2020 is the textbook case. Gold plus 6.4 percent, SPY minus 14.5, Bitcoin minus 17.5. Gold's max drawdown is about a third of SPY's. 2022 inflation and rate hikes: Gold minus 11.9, SPY minus 5.9. Gold does not outperform. That's the counterexample that makes the conclusion conditional. 2023 banking stress: Gold beats SPY, but Bitcoin rallies more. Different shocks, different safe assets. Don't average them into one slogan.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Three shocks, three answers", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: COVID is the safe-haven case. 2022 is why the conclusion is conditional.", "text_color": "C4B5FD"}
+      ],
+      "images": [
+        {"path": "figures/fig2-stress-window-returns.png", "left": 0.4, "top": 0.85, "width": 7.5}
+      ],
+      "tables": [
+        {
+          "left": 8.05, "top": 1.1, "width": 4.8, "height": 4.6,
+          "rows": [
+            ["Window", "Gold", "SPY", "BTC"],
+            ["COVID 2020", "+0.064", "−0.145", "−0.175"],
+            ["Inflation 2022", "−0.119", "−0.059", "−0.439"],
+            ["Banking 2023", "+0.085", "+0.052", "+0.235"],
+            ["COVID max DD", "−0.134", "−0.411", "−0.713"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Three tasks, chronological splits, no shuffling. Model E: will Gold beat SPY tomorrow? XGBoost ROC-AUC 0.6835 versus 0.50 majority and 0.50 VIX rule. Random Forest actually wins balanced accuracy. Ranking winner and classification winner are not the same model. Model F: Ridge and persistence beat XGBoost on sticky volatility. XGBoost's five-day VIX R-squared is negative. Model G: original high-yield target was 0.7 percent positive, so accuracy was useless. On stress_any, logistic PR-AUC 0.7095 beats XGBoost. Match the model class to the target.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Models E / F / G — complexity is not free", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: XGBoost ranks Model E; Ridge wins sticky vol; logistic wins Model G.", "text_color": "C4B5FD"}
+      ],
+      "images": [
+        {"path": "figures/fig3-model-roc-auc.png", "left": 0.35, "top": 0.85, "width": 6.5}
+      ],
+      "tables": [
+        {
+          "left": 7.0, "top": 0.95, "width": 5.85, "height": 5.1,
+          "rows": [
+            ["Task", "Winner", "Number"],
+            ["E  Gold > SPY t+1", "XGBoost ROC–AUC", "0.6835"],
+            ["E  balanced metrics", "Random Forest", "0.647 bal. acc"],
+            ["F  SPY vol h=5", "Ridge RMSE", "0.0210"],
+            ["F  VIX h=5", "Persistence", "XGB R² = −0.43"],
+            ["G  stress_any h=5", "Logistic PR–AUC", "0.7095"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Walk-forward, expanding window, 2019 through 2026: mean ROC-AUC 0.6571, every fold above 0.55. Not one lucky split. SHAP on Model E: 40 percent of the mass is cross-asset momentum, 20 percent macro stress. It is a momentum-plus-stress classifier, not a pure stress gauge. VIX widening survives 66, 75, and 90. stress_any dies at 90. HYS and FSI never were robust.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Robustness: thresholds, SHAP, walk-forward", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Takeaway: Model E is momentum + stress, and the VIX result survives every cutoff.", "text_color": "C4B5FD"}
+      ],
+      "images": [
+        {"path": "figures/fig4-themed-shap.png", "left": 0.35, "top": 0.85, "width": 6.6}
+      ],
+      "tables": [
+        {
+          "left": 7.15, "top": 1.05, "width": 5.7, "height": 4.9,
+          "rows": [
+            ["Check", "Result"],
+            ["Walk-forward mean AUC", "0.6571 (σ 0.0289)"],
+            ["Folds > 0.55", "8 / 8 years, 2019–2026"],
+            ["SHAP themes", "momentum 39.5% · stress 20%"],
+            ["VIX widening", "survives 66 / 75 / 90"],
+            ["stress_any", "survives 66 and 75, not 90"]
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "blank",
+      "background": "0C0B12",
+      "notes": "Three findings. Stress tracks volatility. Gold is a conditional safe haven. Bitcoin is not digital Gold here. Limitations I want on the table: full-sample quantiles, regime drift — the MLP's 47-point train/test gap is the exhibit — event-window choice, 2014 start, no trading costs, and the original notebooks were not recovered. The report is the source of truth for the numbers. Happy to take questions on the modeling comparison or on why we moved off daily Gold-return prediction.",
+      "shapes": [
+        {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Conclusions sit next to their limitations", "text_color": "F2F0F7"},
+        {"type": "rounded_rectangle", "left": 0.55, "top": 6.55, "width": 12.2, "height": 0.5, "fill": "16141F", "text": "Report is the source of truth. src/ is a reconstruction, not the lost notebooks.", "text_color": "C4B5FD"}
+      ],
+      "tables": [
+        {
+          "left": 0.55, "top": 0.95, "width": 12.2, "height": 5.2,
+          "rows": [
+            ["Finding", "Limitation sitting next to it"],
+            ["Stress tracks volatility", "Full-sample 66th percentile is retrospective"],
+            ["Gold is a conditional safe haven (VIX / COVID)", "HYS and FSI do not agree; 2022 rates hurt Gold"],
+            ["Bitcoin is not digital Gold (beta rises in stress)", "Sample starts 2014; U.S.-centric macros; no costs"],
+            ["Nonlinear models help Model E; Ridge wins Model F", "MLP: ~100% train / ~53% test — covariate shift"],
+            ["Walk-forward mean AUC 0.6571", "Original notebooks / hyperparameters were not recovered"]
+          ]
+        }
+      ]
+    }
+  ]
+}
