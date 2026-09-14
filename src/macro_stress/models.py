@@ -59,6 +59,15 @@ def fit_logistic(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
     return classification_metrics(test[target], pred, proba)
 
 
+def _fit_sklearnish_classifier(clf, train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
+    X_tr, X_te = X_from(train), X_from(test)
+    y_tr = train[target].astype(int)
+    clf.fit(X_tr, y_tr)
+    proba = clf.predict_proba(X_te)[:, 1]
+    pred = (proba >= 0.5).astype(int)
+    return classification_metrics(test[target], pred, proba)
+
+
 def fit_xgboost_classifier(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
     from xgboost import XGBClassifier
 
@@ -74,12 +83,7 @@ def fit_xgboost_classifier(train: pd.DataFrame, test: pd.DataFrame, target: str)
         random_state=42,
         verbosity=0,
     )
-    X_tr, X_te = X_from(train), X_from(test)
-    y_tr = train[target].astype(int)
-    clf.fit(X_tr, y_tr)
-    proba = clf.predict_proba(X_te)[:, 1]
-    pred = (proba >= 0.5).astype(int)
-    return classification_metrics(test[target], pred, proba)
+    return _fit_sklearnish_classifier(clf, train, test, target)
 
 
 def fit_random_forest(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
@@ -89,12 +93,41 @@ def fit_random_forest(train: pd.DataFrame, test: pd.DataFrame, target: str) -> d
         n_jobs=1,
         class_weight="balanced",
     )
-    X_tr, X_te = X_from(train), X_from(test)
-    y_tr = train[target].astype(int)
-    clf.fit(X_tr, y_tr)
-    proba = clf.predict_proba(X_te)[:, 1]
-    pred = (proba >= 0.5).astype(int)
-    return classification_metrics(test[target], pred, proba)
+    return _fit_sklearnish_classifier(clf, train, test, target)
+
+
+def fit_optional_boosting(train: pd.DataFrame, test: pd.DataFrame, target: str) -> list[dict]:
+    """LightGBM / CatBoost if installed. Missing extras are skipped, not faked."""
+    rows: list[dict] = []
+    try:
+        from lightgbm import LGBMClassifier
+
+        clf = LGBMClassifier(
+            n_estimators=200,
+            max_depth=4,
+            learning_rate=0.05,
+            subsample=0.9,
+            colsample_bytree=0.9,
+            random_state=42,
+            verbosity=-1,
+        )
+        rows.append({"model": "LightGBM", **_fit_sklearnish_classifier(clf, train, test, target)})
+    except ImportError:
+        pass
+    try:
+        from catboost import CatBoostClassifier
+
+        clf = CatBoostClassifier(
+            iterations=200,
+            depth=4,
+            learning_rate=0.05,
+            random_seed=42,
+            verbose=False,
+        )
+        rows.append({"model": "CatBoost", **_fit_sklearnish_classifier(clf, train, test, target)})
+    except ImportError:
+        pass
+    return rows
 
 
 def fit_mlp(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:

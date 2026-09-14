@@ -3,7 +3,7 @@ VENV := .venv
 BIN := $(VENV)/bin
 export PYTHONPATH := src
 
-.PHONY: setup test reproduce data-check clean
+.PHONY: setup test reproduce data-check download clean
 
 setup:
 	@if [ "$$(uname)" = Darwin ] && command -v brew >/dev/null 2>&1; then \
@@ -20,6 +20,9 @@ setup:
 
 test:
 	$(BIN)/pytest
+
+download:
+	$(BIN)/python scripts/download_data.py
 
 data-check:
 	$(BIN)/python -m macro_stress.cli data-check

@@ -101,6 +101,93 @@ def event_cumulative_returns(df: pd.DataFrame) -> dict[str, dict[str, float]]:
     return result
 
 
+def rolling_corr_by_regime(
+    df: pd.DataFrame,
+    left: str,
+    right: str,
+    flag: str,
+    window: int = 60,
+) -> dict[str, float]:
+    """Mean of a rolling correlation inside vs outside a stress flag."""
+    corr = df[left].rolling(window, min_periods=window).corr(df[right])
+    high = df[flag] == 1
+    return {
+        "low": float(corr.loc[~high].mean()),
+        "high": float(corr.loc[high].mean()),
+        "window": float(window),
+    }
+
+
+def max_drawdown(log_returns: pd.Series) -> float:
+    """Peak-to-trough drawdown on a log-return path (wealth = exp(cumsum))."""
+    wealth = pd.Series(np.exp(log_returns.fillna(0).to_numpy().cumsum()), dtype=float)
+    peak = wealth.cummax()
+    dd = wealth / peak - 1.0
+    return float(dd.min())
+
+
+def event_drawdowns(df: pd.DataFrame) -> dict[str, dict[str, float]]:
+    result: dict[str, dict[str, float]] = {}
+    for name, (start, end) in EVENT_WINDOWS.items():
+        window = df.loc[(df["Date"] >= start) & (df["Date"] <= end)]
+        result[name] = {
+            "gold": max_drawdown(window["gold_ret"]),
+            "spy": max_drawdown(window["spy_ret"]),
+            "btc": max_drawdown(window["btc_ret"]),
+        }
+    return result
+
+
+def left_tail_overlap(df: pd.DataFrame, asset: str, spy: str = "spy_ret", q: float = 0.05) -> float:
+    """Share of SPY's worst-q days that are also worst-q days for `asset`."""
+    spy_cut = df[spy].quantile(q)
+    asset_cut = df[asset].quantile(q)
+    spy_bad = df[spy] <= spy_cut
+    asset_bad = df[asset] <= asset_cut
+    n = int(spy_bad.sum())
+    if n == 0:
+        return float("nan")
+    return float((spy_bad & asset_bad).sum() / n)
+
+
+def threshold_robustness(df: pd.DataFrame, quantiles: tuple[float, ...] = (0.66, 0.75, 0.90)) -> dict:
+    """Recompute Gold–SPY spread widening at several stress percentiles."""
+    from .regimes import PROXY_COLUMNS, add_stress_flags
+
+    usable = df.dropna(subset=["gold_ret", "spy_ret"]).copy()
+    out: dict[str, dict[str, dict[str, float]]] = {}
+    for q in quantiles:
+        flagged = add_stress_flags(usable, quantile=q)
+        key = f"p{int(round(q * 100))}"
+        out[key] = {}
+        for flag in list(PROXY_COLUMNS) + ["stress_any", "stress_all"]:
+            stats = mean_return_table(flagged, flag)
+            out[key][flag] = {
+                "delta_gold_spy": stats["delta_gold_spy"],
+                "ci_lower": stats["ci_lower"],
+                "share_high": stats["share_high"],
+            }
+    return out
+
+
+def spearman_stress_vs_spread(df: pd.DataFrame) -> dict[str, dict[str, float]]:
+    """Rank correlation between stress intensity and the Gold–SPY return spread."""
+    usable = df.dropna(subset=["gold_ret", "spy_ret"]).copy()
+    spread = usable["gold_ret"] - usable["spy_ret"]
+    result: dict[str, dict[str, float]] = {}
+    for name, col in (
+        ("vix", "Volatility_Index"),
+        ("hys", "High_Yield_Spread"),
+        ("fsi", "Financial_Stress_Index"),
+    ):
+        pair = pd.DataFrame({"x": usable[col], "y": spread}).dropna()
+        rx = pair["x"].rank().to_numpy(dtype=float)
+        ry = pair["y"].rank().to_numpy(dtype=float)
+        rho = float(np.corrcoef(rx, ry)[0, 1]) if len(pair) > 2 else float("nan")
+        result[name] = {"rho": rho, "n": int(len(pair))}
+    return result
+
+
 def spy_beta(df: pd.DataFrame, flag: str = "stress_any") -> dict[str, float]:
     def _beta(frame: pd.DataFrame, ycol: str) -> float:
         x = frame["spy_ret"].to_numpy()

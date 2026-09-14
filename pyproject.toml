@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "macro-stress"
 version = "0.1.0"
-description = "Reproducibility packaging for the CompSci 390B macro-stress / safe-haven project."
+description = "Reconstructed CompSci 390B analysis: Gold, SPY, and Bitcoin under macro-financial stress."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [

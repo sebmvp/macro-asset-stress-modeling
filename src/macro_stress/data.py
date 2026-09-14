@@ -56,13 +56,19 @@ def find_dataset(explicit: str | Path | None = None) -> Path | None:
     return None
 
 
+def restrict_to_project_sample(df: pd.DataFrame) -> pd.DataFrame:
+    """Keep the historical project window even if Kaggle later extends the file."""
+    out = df.loc[(df["Date"] >= SAMPLE_START) & (df["Date"] <= SAMPLE_END)].copy()
+    return out.sort_values("Date").drop_duplicates("Date").reset_index(drop=True)
+
+
 def load_raw(path: str | Path) -> pd.DataFrame:
     df = pd.read_csv(path)
     if "Date" not in df.columns:
         raise ValueError("dataset is missing a Date column")
     df["Date"] = pd.to_datetime(df["Date"])
     df = df.sort_values("Date").drop_duplicates("Date").reset_index(drop=True)
-    return df
+    return restrict_to_project_sample(df)
 
 
 def validate_dataset(df: pd.DataFrame) -> list[str]:

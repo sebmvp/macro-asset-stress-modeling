@@ -11,6 +11,7 @@ __pycache__/
 data/*.csv
 data/*.zip
 !data/README.md
+!data/data_schema.csv
 
 # Local reproduce output (committed copies live under results/historical/)
 results/latest/

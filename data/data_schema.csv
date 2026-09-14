@@ -1,0 +1,19 @@
+column,role,notes
+Date,index,Daily calendar date. Project sample is 2014-10-17 through 2026-02-25.
+Equities_US,asset price,SPY / U.S. equities. Source reported by Kaggle: Yahoo Finance.
+Gold,asset price,Gold price. Source reported by Kaggle: Yahoo Finance.
+Crypto_Bitcoin,asset price,Bitcoin. Source reported by Kaggle: Yahoo Finance.
+Volatility_Index,macro,VIX. Used for stress_vix at the 66th percentile (19.060).
+High_Yield_Spread,macro,High-yield credit spread. Used for stress_hys (4.400).
+Financial_Stress_Index,macro,Financial stress index. Used for stress_fsi (-0.172).
+Yield_Curve_Spread,macro,Treasury yield-curve spread.
+Stock_Bond_Corr_90d,market state,90-day stock–bond correlation.
+SPY_Drawdown,market state,SPY drawdown from a recent peak.
+SPY_Rolling_Vol_30d,volatility,Annualized 30-day SPY volatility (provided in the panel).
+BTC_Rolling_Vol_30d,volatility,Annualized 30-day Bitcoin volatility (provided in the panel).
+SPY_RSI_14,technical,14-day RSI on SPY.
+GLD_RSI_14,technical,14-day RSI on Gold.
+Equities_Tech,optional extra,Present in some extracts; not required by the reconstruction.
+Equities_Emerging,optional extra,Present in some extracts; not required.
+Bonds_LongTerm,optional extra,Present in some extracts; not required.
+Oil,optional extra,Present in some extracts; not required.

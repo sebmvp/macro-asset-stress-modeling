@@ -11,6 +11,7 @@ from .data import (
     SAMPLE_START,
     find_dataset,
     load_raw,
+    restrict_to_project_sample,
     validate_dataset,
 )
 from .features import FEATURE_COUNT, build_supervised_frame, log_returns
@@ -27,5 +28,6 @@ __all__ = [
     "find_dataset",
     "load_raw",
     "log_returns",
+    "restrict_to_project_sample",
     "validate_dataset",
 ]

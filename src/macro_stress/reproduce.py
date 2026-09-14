@@ -13,8 +13,13 @@ from sklearn.preprocessing import StandardScaler
 from .analysis import (
     M1_VOL_FEATURES,
     event_cumulative_returns,
+    event_drawdowns,
+    left_tail_overlap,
     mean_return_table,
+    rolling_corr_by_regime,
+    spearman_stress_vs_spread,
     spy_beta,
+    threshold_robustness,
     vol_by_regime,
 )
 from .data import (
@@ -40,6 +45,9 @@ from .features import (
 )
 from .models import (
     fit_logistic,
+    fit_mlp,
+    fit_optional_boosting,
+    fit_random_forest,
     fit_ridge_regressor,
     fit_xgboost_classifier,
     fit_xgboost_regressor,
@@ -83,7 +91,13 @@ def run_model_e(frame: pd.DataFrame) -> list[dict]:
             "model": "XGBoost",
             **fit_xgboost_classifier(split.train, split.test, "y_gold_gt_spy"),
         },
+        {
+            "model": "Random Forest",
+            **fit_random_forest(split.train, split.test, "y_gold_gt_spy"),
+        },
+        {"model": "MLP", **fit_mlp(split.train, split.test, "y_gold_gt_spy")},
     ]
+    rows.extend(fit_optional_boosting(split.train, split.test, "y_gold_gt_spy"))
     return rows
 
 
@@ -243,7 +257,26 @@ def reproduce(data_path: str | None = None) -> dict:
         },
         "vol_stress_any": vol_by_regime(frame.dropna(subset=["Gold_Rolling_Vol_30d"])),
         "event_windows_reconstructed": event_cumulative_returns(frame),
+        "event_drawdowns_reconstructed": event_drawdowns(frame),
         "betas_stress_any": spy_beta(frame.dropna(subset=["gold_ret", "spy_ret", "btc_ret"])),
+        "rolling_corr": {
+            f"gold_spy_{flag}": rolling_corr_by_regime(
+                frame.dropna(subset=["gold_ret", "spy_ret"]), "gold_ret", "spy_ret", flag
+            )
+            for flag in ("stress_hys", "stress_fsi", "stress_vix", "stress_any", "stress_all")
+        },
+        "rolling_corr_gold_btc": {
+            flag: rolling_corr_by_regime(
+                frame.dropna(subset=["gold_ret", "btc_ret"]), "gold_ret", "btc_ret", flag
+            )
+            for flag in ("stress_any", "stress_all")
+        },
+        "left_tail_overlap": {
+            "gold": left_tail_overlap(frame.dropna(subset=["gold_ret", "spy_ret"]), "gold_ret"),
+            "btc": left_tail_overlap(frame.dropna(subset=["btc_ret", "spy_ret"]), "btc_ret"),
+        },
+        "spearman_stress_vs_spread": spearman_stress_vs_spread(frame),
+        "threshold_robustness": threshold_robustness(frame),
     }
     model_e = run_model_e(frame)
     model_f = run_model_f(frame)
