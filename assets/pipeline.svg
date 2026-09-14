@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="168" viewBox="0 0 860 168" role="img" aria-label="Analysis pipeline from raw data through regimes, models, and robustness">
+  <rect width="860" height="168" rx="8" fill="#0c0b12"/>
+  <rect width="860" height="168" rx="8" fill="none" stroke="#2c2838" stroke-width="1"/>
+
+  <style>
+    .box { fill:#16141f; stroke:#2c2838; stroke-width:1; }
+    .lab { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size:11px; fill:#f2f0f7; text-anchor:middle; }
+    .sub { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size:9px; fill:#8a8498; text-anchor:middle; }
+    .arr { stroke:#8b5cf6; stroke-width:1.4; fill:none; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect class="box" x="16" y="36" width="108" height="56" rx="6"/>
+  <text class="lab" x="70" y="60">Raw daily panel</text>
+  <text class="sub" x="70" y="76">4,150 days</text>
+
+  <line class="arr" x1="124" y1="64" x2="148" y2="64" marker-end="url(#arr)"/>
+
+  <rect class="box" x="152" y="36" width="108" height="56" rx="6"/>
+  <text class="lab" x="206" y="60">Returns + features</text>
+  <text class="sub" x="206" y="76">55 predictors</text>
+
+  <line class="arr" x1="260" y1="64" x2="284" y2="64" marker-end="url(#arr)"/>
+
+  <rect class="box" x="288" y="36" width="108" height="56" rx="6"/>
+  <text class="lab" x="342" y="60">Stress regimes</text>
+  <text class="sub" x="342" y="76">66th percentile</text>
+
+  <line class="arr" x1="396" y1="64" x2="420" y2="64" marker-end="url(#arr)"/>
+
+  <rect class="box" x="424" y="36" width="108" height="56" rx="6"/>
+  <text class="lab" x="478" y="60">Safe-haven tests</text>
+  <text class="sub" x="478" y="76">means, vol, events</text>
+
+  <line class="arr" x1="532" y1="64" x2="556" y2="64" marker-end="url(#arr)"/>
+
+  <rect class="box" x="560" y="36" width="108" height="56" rx="6"/>
+  <text class="lab" x="614" y="60">Models E / F / G</text>
+  <text class="sub" x="614" y="76">chronological split</text>
+
+  <line class="arr" x1="668" y1="64" x2="692" y2="64" marker-end="url(#arr)"/>
+
+  <rect class="box" x="696" y="36" width="148" height="56" rx="6"/>
+  <text class="lab" x="770" y="60">Robustness</text>
+  <text class="sub" x="770" y="76">SHAP · walk-forward</text>
+
+  <text class="sub" x="430" y="128">No shuffling. Targets shifted forward before the split. Report numbers are checksums; src/ is a reconstruction.</text>
+  <text class="sub" x="430" y="146">Final interpretation: Gold is a conditional safe haven. Bitcoin is not digital Gold in this sample.</text>
+</svg>
