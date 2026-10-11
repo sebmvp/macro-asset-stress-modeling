@@ -48,6 +48,6 @@
   <text class="lab" x="770" y="60">Robustness</text>
   <text class="sub" x="770" y="76">SHAP · walk-forward</text>
 
-  <text class="sub" x="430" y="128">No shuffling. Targets shifted forward before the split. Report numbers are checksums; src/ is a reconstruction.</text>
+  <text class="sub" x="430" y="128">No shuffling. Targets shifted forward before the split.</text>
   <text class="sub" x="430" y="146">Final interpretation: Gold is a conditional safe haven. Bitcoin is not digital Gold in this sample.</text>
 </svg>

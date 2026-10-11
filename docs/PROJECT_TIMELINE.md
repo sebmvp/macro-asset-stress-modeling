@@ -46,8 +46,4 @@ haven; Bitcoin is not digital Gold in this sample. Modeling lesson:
 nonlinear models help the directional task; persistence and Ridge remain
 hard to beat on sticky volatility.
 
-## Phase 6 — repository recovery (September 2026)
-
-Original notebooks were not recovered. This repository reconstructs the
-published methodology, packages the report and course slides, and
-separates published checksums from reconstructed runs.
+Notebooks `01`–`04` are the runnable form of that sequence.

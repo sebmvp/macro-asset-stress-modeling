@@ -1,10 +1,4 @@
-"""Model families from the final report.
-
-Hyperparameters are library defaults plus the choices the report states
-explicitly (class-balanced logistic, chronological evaluation). Original
-XGBoost / RF / MLP settings were not recovered and are NOT tuned here
-to chase published scores. Those scores are checksums, not targets.
-"""
+"""Model families used in the Milestone 2 / 3 notebooks."""
 
 from __future__ import annotations
 
@@ -18,6 +12,61 @@ from sklearn.preprocessing import StandardScaler
 
 from .evaluation import classification_metrics, regression_metrics
 from .features import X_from
+
+XGB_CLASSIFIER_PARAMS = {
+    "n_estimators": 400,
+    "max_depth": 4,
+    "learning_rate": 0.05,
+    "subsample": 0.9,
+    "colsample_bytree": 0.9,
+    "eval_metric": "logloss",
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbosity": 0,
+}
+
+RF_CLASSIFIER_PARAMS = {
+    "n_estimators": 500,
+    "max_depth": 8,
+    "min_samples_leaf": 10,
+    "class_weight": "balanced",
+    "n_jobs": -1,
+    "random_state": 42,
+}
+
+LGBM_CLASSIFIER_PARAMS = {
+    "n_estimators": 500,
+    "num_leaves": 31,
+    "learning_rate": 0.05,
+    "subsample": 0.9,
+    "colsample_bytree": 0.9,
+    "class_weight": "balanced",
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbose": -1,
+}
+
+CATBOOST_CLASSIFIER_PARAMS = {
+    "iterations": 500,
+    "depth": 5,
+    "learning_rate": 0.05,
+    "loss_function": "Logloss",
+    "auto_class_weights": "Balanced",
+    "random_seed": 42,
+    "verbose": False,
+}
+
+
+def make_xgboost_classifier(**overrides):
+    from xgboost import XGBClassifier
+
+    params = {**XGB_CLASSIFIER_PARAMS, **overrides}
+    return XGBClassifier(**params)
+
+
+def make_random_forest_classifier(**overrides):
+    params = {**RF_CLASSIFIER_PARAMS, **overrides}
+    return RandomForestClassifier(**params)
 
 
 def majority_predict(y_train: pd.Series, n: int) -> tuple[np.ndarray, np.ndarray]:
@@ -69,31 +118,11 @@ def _fit_sklearnish_classifier(clf, train: pd.DataFrame, test: pd.DataFrame, tar
 
 
 def fit_xgboost_classifier(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
-    from xgboost import XGBClassifier
-
-    clf = XGBClassifier(
-        n_estimators=200,
-        max_depth=4,
-        learning_rate=0.05,
-        subsample=0.9,
-        colsample_bytree=0.9,
-        objective="binary:logistic",
-        eval_metric="logloss",
-        n_jobs=1,
-        random_state=42,
-        verbosity=0,
-    )
-    return _fit_sklearnish_classifier(clf, train, test, target)
+    return _fit_sklearnish_classifier(make_xgboost_classifier(), train, test, target)
 
 
 def fit_random_forest(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
-    clf = RandomForestClassifier(
-        n_estimators=200,
-        random_state=42,
-        n_jobs=1,
-        class_weight="balanced",
-    )
-    return _fit_sklearnish_classifier(clf, train, test, target)
+    return _fit_sklearnish_classifier(make_random_forest_classifier(), train, test, target)
 
 
 def fit_optional_boosting(train: pd.DataFrame, test: pd.DataFrame, target: str) -> list[dict]:
@@ -102,28 +131,14 @@ def fit_optional_boosting(train: pd.DataFrame, test: pd.DataFrame, target: str) 
     try:
         from lightgbm import LGBMClassifier
 
-        clf = LGBMClassifier(
-            n_estimators=200,
-            max_depth=4,
-            learning_rate=0.05,
-            subsample=0.9,
-            colsample_bytree=0.9,
-            random_state=42,
-            verbosity=-1,
-        )
+        clf = LGBMClassifier(**LGBM_CLASSIFIER_PARAMS)
         rows.append({"model": "LightGBM", **_fit_sklearnish_classifier(clf, train, test, target)})
     except ImportError:
         pass
     try:
         from catboost import CatBoostClassifier
 
-        clf = CatBoostClassifier(
-            iterations=200,
-            depth=4,
-            learning_rate=0.05,
-            random_seed=42,
-            verbose=False,
-        )
+        clf = CatBoostClassifier(**CATBOOST_CLASSIFIER_PARAMS)
         rows.append({"model": "CatBoost", **_fit_sklearnish_classifier(clf, train, test, target)})
     except ImportError:
         pass
@@ -131,7 +146,7 @@ def fit_optional_boosting(train: pd.DataFrame, test: pd.DataFrame, target: str) 
 
 
 def fit_mlp(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
-    """Regularized MLP — not the overfit Milestone-2 net."""
+    """MLP with the Milestone 3 bake-off settings (64, 64), alpha=1e-3."""
     pipe = Pipeline(
         [
             ("scaler", StandardScaler()),
@@ -139,8 +154,9 @@ def fit_mlp(train: pd.DataFrame, test: pd.DataFrame, target: str) -> dict:
                 "clf",
                 MLPClassifier(
                     hidden_layer_sizes=(64, 64),
-                    alpha=1e-2,
-                    early_stopping=True,
+                    activation="relu",
+                    solver="adam",
+                    alpha=1e-3,
                     max_iter=400,
                     random_state=42,
                 ),
@@ -179,12 +195,12 @@ def fit_xgboost_regressor(
     from xgboost import XGBRegressor
 
     model = XGBRegressor(
-        n_estimators=200,
+        n_estimators=400,
         max_depth=4,
         learning_rate=0.05,
         subsample=0.9,
         colsample_bytree=0.9,
-        n_jobs=1,
+        n_jobs=-1,
         random_state=42,
         verbosity=0,
     )

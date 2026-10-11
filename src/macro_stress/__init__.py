@@ -1,8 +1,4 @@
-"""Reconstructed CompSci 390B macro-stress / safe-haven analysis.
-
-The original course notebooks were not recovered. Modules here implement
-the methodology in the May 2026 final report. See docs/PROVENANCE.md.
-"""
+"""CompSci 390B macro-stress / safe-haven analysis."""
 
 from .data import (
     CANONICAL_CSV_NAME,

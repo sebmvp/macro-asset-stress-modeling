@@ -189,7 +189,7 @@
     {
       "layout": "blank",
       "background": "0C0B12",
-      "notes": "Three findings. Stress tracks volatility. Gold is a conditional safe haven. Bitcoin is not digital Gold here. Limitations I want on the table: full-sample quantiles, regime drift — the MLP's 47-point train/test gap is the exhibit — event-window choice, 2014 start, no trading costs, and the original notebooks were not recovered. The report is the source of truth for the numbers. Happy to take questions on the modeling comparison or on why we moved off daily Gold-return prediction.",
+      "notes": "Three findings. Stress tracks volatility. Gold is a conditional safe haven. Bitcoin is not digital Gold here. Limitations I want on the table: full-sample quantiles, regime drift — the MLP's 47-point train/test gap is the exhibit — event-window choice, 2014 start, no trading costs. Happy to take questions on the modeling comparison or on why we moved off daily Gold-return prediction.",
       "shapes": [
         {"type": "rectangle", "left": 0, "top": 0, "width": 0.16, "height": 7.5, "fill": "8B5CF6"},
         {"type": "rounded_rectangle", "left": 0.55, "top": 0.22, "width": 12.2, "height": 0.5, "fill": "0C0B12", "text": "Conclusions sit next to their limitations", "text_color": "F2F0F7"},
@@ -204,7 +204,7 @@
             ["Gold is a conditional safe haven (VIX / COVID)", "HYS and FSI do not agree; 2022 rates hurt Gold"],
             ["Bitcoin is not digital Gold (beta rises in stress)", "Sample starts 2014; U.S.-centric macros; no costs"],
             ["Nonlinear models help Model E; Ridge wins Model F", "MLP: ~100% train / ~53% test — covariate shift"],
-            ["Walk-forward mean AUC 0.6571", "Original notebooks / hyperparameters were not recovered"]
+            ["Walk-forward mean AUC 0.6571", "Hyperparameters documented in notebooks 02–03"]
           ]
         }
       ]

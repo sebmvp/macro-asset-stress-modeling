@@ -1,5 +1,5 @@
 {
-  "comment": "Published checksums from the May 2026 CompSci 390B report. Reconstruction is not tuned to hit these.",
+  "comment": "Published numbers from the May 2026 CompSci 390B report.",
   "items": [
     {
       "id": "m1_gold_zero_rmse",

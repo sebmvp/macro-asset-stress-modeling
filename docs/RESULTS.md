@@ -1,8 +1,7 @@
 # Results
 
-Numbers in this file are **published project results** from the May 2026
-report unless a row is marked reconstructed. Do not replace them with
-whatever `make reproduce` happens to print.
+Numbers in this file are the project results from the May 2026 report.
+Live notebook runs sit next to them; small floating-point differences are expected.
 
 ## Safe-haven returns
 

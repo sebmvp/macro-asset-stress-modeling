@@ -16,8 +16,7 @@ import pandas as pd
 
 STRESS_QUANTILE = 0.66
 
-# Anchors from the May 2026 report (Table 1). Used as checksums, not inputs,
-# unless the caller passes use_historical_thresholds=True.
+# Published 66th-percentile thresholds on the 4,150-row panel.
 HISTORICAL_THRESHOLDS = {
     "High_Yield_Spread": 4.400,
     "Financial_Stress_Index": -0.172,

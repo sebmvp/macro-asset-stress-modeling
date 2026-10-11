@@ -35,9 +35,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     e = next(r for r in payload["model_e"] if r["model"] == "XGBoost")
     print(
-        "Reconstructed run written to results/latest/run.json\n"
-        f"Model E XGBoost ROC–AUC={e.get('roc_auc'):.4f}  "
-        f"(published checksum 0.6835)\n"
+        "Batch run written to results/latest/run.json\n"
+        f"Model E XGBoost ROC–AUC={e.get('roc_auc'):.4f}\n"
         f"Walk-forward mean ROC–AUC={payload.get('walk_forward_mean_roc_auc')}"
     )
     return 0

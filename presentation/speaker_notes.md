@@ -85,6 +85,6 @@ VIX widening survives 66 / 75 / 90. `stress_any` dies at 90. HYS and FSI never w
 
 Three findings. Stress tracks volatility. Gold is a conditional safe haven. Bitcoin is not digital Gold here.
 
-Limitations I want on the table: full-sample quantiles, regime drift — the MLP's 47-point train/test gap is the exhibit — event-window choice, 2014 start, no trading costs, and the original notebooks were not recovered. The report is the source of truth for the numbers.
+Limitations I want on the table: full-sample quantiles, regime drift — the MLP's 47-point train/test gap is the exhibit — event-window choice, 2014 start, no trading costs.
 
 Happy to take questions on the modeling comparison or on why we moved off daily Gold-return prediction.

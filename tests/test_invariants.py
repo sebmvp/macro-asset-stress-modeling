@@ -120,7 +120,7 @@ def test_walk_forward_is_expanding_and_ordered():
         prev_train_n = len(split.train)
 
 
-def test_reconstructed_matrix_has_55_predictors(panel):
+def test_feature_matrix_has_55_predictors(panel):
     names = feature_names()
     assert len(names) == FEATURE_COUNT == 55
     assert len(set(names)) == 55
@@ -136,5 +136,16 @@ def test_reconstructed_matrix_has_55_predictors(panel):
         "Volatility_Index",
         "GLD_RSI_14",
         "stress_any_t",
+        "stress_hys_t",
     ):
         assert required in names
+    assert "stress_all" not in names
+
+
+def test_xgboost_factory_uses_400_trees():
+    from macro_stress.models import XGB_CLASSIFIER_PARAMS, make_xgboost_classifier
+
+    assert XGB_CLASSIFIER_PARAMS["n_estimators"] == 400
+    clf = make_xgboost_classifier()
+    n_est = clf.get_params()["n_estimators"]
+    assert n_est == 400

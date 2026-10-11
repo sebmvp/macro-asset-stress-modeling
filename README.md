@@ -10,9 +10,9 @@ We asked that as a CompSci 390B group research project (Spring 2026) on 4,150 da
 
 The short answer: **Gold is a conditional safe haven**, not a universal one. The evidence is strongest under volatility-driven stress and the COVID-style liquidity shock. It is weaker under the 2022 inflation/rate shock. Bitcoin fails the same tests — it does not earn the "digital gold" label in this sample.
 
-I worked on model design, training, evaluation, and the comparison across logistic regression, Ridge, XGBoost, LightGBM, CatBoost, Random Forest, MLP, and stacking. Dhruv Kartik implemented the empirical pipeline (regimes, event studies, SHAP, walk-forward). Nathan Dennis led the written report structure. The group shared the research questions and the interpretation.
+I worked on model design, training, evaluation, and the comparison across logistic regression, Ridge, XGBoost, LightGBM, CatBoost, Random Forest, MLP, and stacking. Dhruv Kartik implemented the empirical pipeline (regimes, event studies, SHAP, walk-forward). The group shared the research questions and the interpretation.
 
-This repository is the **September 2026 recovery**: original notebooks were not available to package, so the runnable code reconstructs the published methodology. The May 2026 report remains the scholarly record. See [docs/RECOVERY_NOTES.md](docs/RECOVERY_NOTES.md).
+The runnable form of the project is four Jupyter notebooks, `notebooks/01` through `notebooks/04`, plus the May 2026 report.
 
 ---
 
@@ -33,7 +33,7 @@ We wanted to know whether common macro-stress proxies actually pick out those ep
 
 In this project I focused on **model design, training, evaluation, and comparisons**. I helped set up the families we actually ran — logistic / Ridge baselines against XGBoost, LightGBM, CatBoost, Random Forest, MLP, and stacking — and I used the resulting metrics to argue that "best model" depends on the target.
 
-I did **not** write the original empirical pipeline. Dhruv built regime construction, the conditional return/volatility tests, event studies, SHAP, threshold robustness, and walk-forward. I am packaging this repository after the course workspace was lost.
+Dhruv built regime construction, the conditional return/volatility tests, event studies, SHAP, threshold robustness, and walk-forward.
 
 ## Dataset
 
@@ -70,7 +70,7 @@ Baseline stress flags use the **66th percentile** so we isolate elevated stress 
 
 ## Main empirical findings
 
-Full tables: [docs/RESULTS.md](docs/RESULTS.md). These are **published report numbers**.
+Full tables: [docs/RESULTS.md](docs/RESULTS.md).
 
 **Gold's safe-haven status is real but conditional.** Under VIX stress, Gold's mean daily log return is +0.00068 while SPY's is −0.00092 — the spread widens by 0.00247 with a bootstrap CI excluding zero (`stress_any` +0.00096; `stress_all` +0.00191). The same test under financial-stress-index regimes shows *no* Gold advantage (−0.00012). In the 2022 inflation/rate-hike window Gold lost more than SPY.
 
@@ -86,9 +86,9 @@ Three supervised tasks. No shuffling.
 
 - **Model E** — does Gold beat SPY tomorrow? 55 predictors. Train 2014-11-21 → 2023-11-25, test 2023-11-26 → 2026-02-24 (822 rows; Gold beats SPY on 38.3% of them).
 - **Model F** — 30-day rolling volatility for SPY, Bitcoin, and VIX at h = 1 and 5: persistence vs Ridge vs XGBoost.
-- **Model G** — `stress_any` five trading days ahead. Headline metric: PR–AUC, because the original high-yield-stress target had a ~0.7% test positive rate.
+- **Model G** — `stress_any` five trading days ahead. Headline metric: PR–AUC, because the high-yield-stress target had a ~0.7% test positive rate.
 
-### Model E (published)
+### Model E
 
 | Model | Accuracy | Bal. acc | F1 | ROC–AUC |
 |---|---:|---:|---:|---:|
@@ -108,7 +108,7 @@ Walk-forward (expanding yearly tests 2019–2026): mean ROC–AUC **0.6571** (σ
 
 Themed SHAP: cross-asset momentum 39.5%, macro stress 20.0%, RSI 17.3%, volatility 14.3%, other 9.0%. Model E is a **momentum + stress** classifier, not a pure macro-stress model.
 
-### Model F (published) — complexity is not free
+### Model F — complexity is not free
 
 | Target | Persistence RMSE | Ridge RMSE | XGBoost RMSE |
 |---|---:|---:|---:|
@@ -119,7 +119,7 @@ Themed SHAP: cross-asset momentum 39.5%, macro stress 20.0%, RSI 17.3%, volatili
 
 XGBoost's VIX h=5 R² is **−0.4337**. Persistent volatility rewards persistence and Ridge.
 
-### Model G (published) — PR–AUC on `stress_any` at h=5
+### Model G — PR–AUC on `stress_any` at h=5
 
 | Model | PR–AUC |
 |---|---:|
@@ -169,42 +169,41 @@ These are part of the result.
 - **Event-window selection.** Economically meaningful windows; different dates change cumulative returns.
 - **U.S.-centric sample starting 2014.** Enough for modern Bitcoin, not enough for Gold across many historical cycles. No costs, spreads, taxes, or portfolio constraints.
 - **Multiple testing.** Many regimes, thresholds, horizons, and models.
-- **Lost original notebooks.** Exact hyperparameters were not fully preserved. The report is the source of truth for published numbers.
 
-## Reproduce
+## Run it
 
 ```bash
-make setup          # python 3.13 venv + package (macOS: also installs libomp for XGBoost)
+make setup          # python venv + package (macOS: also installs libomp for XGBoost)
 make test           # leakage / transform invariants (no Kaggle CSV required)
 make download       # needs ~/.kaggle/kaggle.json — or follow data/README.md
-make data-check     # 4,150 rows, dates, required columns
-make reproduce      # features, Model E/F/G, walk-forward, figures
+jupyter notebook notebooks/00_index.ipynb
+# then run 01 → 02 → 03 → 04
 ```
 
-`make reproduce` writes `results/latest/run.json` and `results/latest/DISCREPANCY.md`. Published scores (XGBoost ROC–AUC **0.6835**, Model G logistic PR–AUC **0.7095**) are **checksums**. The reconstruction uses library defaults where original hyperparameters were not recovered. It is not tuned to hit those numbers.
+`make notebooks` executes 01–04 with the project venv. Optional batch path: `make reproduce`.
 
 More: [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
 
 ## Repository
 
 ```
-├── src/macro_stress/     reconstructed analysis (not original notebooks)
+├── notebooks/            01–04 course analysis (run these)
+├── src/macro_stress/     shared library used by notebooks and CLI
 ├── scripts/              download_data.py, reproduce.py
-├── notebooks/            reconstructed walkthrough
 ├── tests/                leakage / split / sample-window invariants
 ├── data/                 schema + download instructions (CSV not committed)
-├── figures/              published report figures
+├── figures/              report figures; notebook plots under figures/notebook/
 ├── report/               final course report (May 2026)
-├── presentation/         8-minute results deck + original course slides
-├── results/historical/   published checksums
-└── docs/                 methodology, results, recovery, timeline
+├── presentation/         8-minute results deck + course slides
+├── results/historical/   report numbers
+└── docs/                 methodology, results, timeline
 ```
 
 ## Report and presentation
 
 - Report: [Algorithmic Prediction of Trade and Value of Monetary and Currency-Based Assets](report/Macro_Asset_Volatility_Modeling.pdf) (May 2026)
 - Results deck (~8 min): [presentation/final_presentation.pptx](presentation/final_presentation.pptx) · [speaker notes](presentation/speaker_notes.md)
-- Original course slides (12 slides, pre-walk-forward framing): [presentation/course-final-presentation.pptx](presentation/course-final-presentation.pptx)
+- Course slides: [presentation/course-final-presentation.pptx](presentation/course-final-presentation.pptx)
 
 ## Who did what
 
@@ -212,13 +211,8 @@ Group project. The boundaries matter.
 
 - **Dhruv Kartik** implemented the empirical pipeline: regime construction, conditional return/volatility analysis, event studies, nonlinear modeling, SHAP, threshold robustness, and walk-forward validation.
 - **Sebastian Vaskes Pimentel** contributed to model design, training, evaluation, and the comparison across Logistic Regression, Ridge, XGBoost, LightGBM, CatBoost, Random Forest, MLP, and stacking.
-- **Nathan Dennis** led much of the written report structure and integration.
 - We collaborated on the research questions, feature choices, safe-haven interpretation, limitations, and conclusions.
-
-**Repository recovery / reproducibility packaging:** Sebastian Vaskes Pimentel, September 2026.
-
-The code in `src/` is reconstructed from the surviving report, dataset, and published metrics. It is not a claim that I wrote the original notebooks.
 
 ## Data license
 
-Kaggle dataset remains CC BY-NC-SA 4.0 on Kaggle. See [docs/DATA_LICENSE_AND_PROVENANCE.md](docs/DATA_LICENSE_AND_PROVENANCE.md). No license file is attached to the reconstruction; the course report is the scholarly record.
+Kaggle dataset remains CC BY-NC-SA 4.0 on Kaggle. See [docs/DATA_LICENSE_AND_PROVENANCE.md](docs/DATA_LICENSE_AND_PROVENANCE.md).

@@ -1,4 +1,4 @@
-"""The reconstruction must pin the historical project window."""
+"""The analysis pins the project sample window 2014-10-17 through 2026-02-25."""
 
 from __future__ import annotations
 

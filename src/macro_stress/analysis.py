@@ -1,20 +1,14 @@
-"""Descriptive safe-haven tests from the final report.
-
-Event-window calendar bounds were not recovered as exact timestamps.
-The windows below are economically standard and marked RECONSTRUCTED;
-cumulative returns will not be treated as a failed checksum if they differ.
-"""
+"""Descriptive safe-haven tests."""
 
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
-# RECONSTRUCTED bounds — original notebook date cuts were not recovered.
 EVENT_WINDOWS = {
-    "covid_2020": (pd.Timestamp("2020-02-19"), pd.Timestamp("2020-03-23")),
-    "inflation_2022": (pd.Timestamp("2022-01-03"), pd.Timestamp("2022-10-14")),
-    "banking_2023": (pd.Timestamp("2023-03-08"), pd.Timestamp("2023-03-24")),
+    "covid_2020": (pd.Timestamp("2020-02-15"), pd.Timestamp("2020-04-30")),
+    "inflation_2022": (pd.Timestamp("2022-06-01"), pd.Timestamp("2022-10-31")),
+    "banking_2023": (pd.Timestamp("2023-03-01"), pd.Timestamp("2023-04-30")),
 }
 
 M1_VOL_FEATURES = [
@@ -119,10 +113,12 @@ def rolling_corr_by_regime(
 
 
 def max_drawdown(log_returns: pd.Series) -> float:
-    """Peak-to-trough drawdown on a log-return path (wealth = exp(cumsum))."""
-    wealth = pd.Series(np.exp(log_returns.fillna(0).to_numpy().cumsum()), dtype=float)
-    peak = wealth.cummax()
-    dd = wealth / peak - 1.0
+    """Peak-to-trough drawdown of a cumulative log-return path."""
+    log_returns = pd.Series(log_returns).dropna()
+    if log_returns.empty:
+        return float("nan")
+    cum = log_returns.cumsum()
+    dd = cum - cum.cummax()
     return float(dd.min())
 
 
@@ -139,12 +135,12 @@ def event_drawdowns(df: pd.DataFrame) -> dict[str, dict[str, float]]:
 
 
 def left_tail_overlap(df: pd.DataFrame, asset: str, spy: str = "spy_ret", q: float = 0.05) -> float:
-    """Share of SPY's worst-q days that are also worst-q days for `asset`."""
+    """Share of the asset's worst-q days that are also SPY's worst-q days."""
     spy_cut = df[spy].quantile(q)
     asset_cut = df[asset].quantile(q)
     spy_bad = df[spy] <= spy_cut
     asset_bad = df[asset] <= asset_cut
-    n = int(spy_bad.sum())
+    n = int(asset_bad.sum())
     if n == 0:
         return float("nan")
     return float((spy_bad & asset_bad).sum() / n)

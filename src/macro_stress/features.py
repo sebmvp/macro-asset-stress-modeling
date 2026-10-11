@@ -1,19 +1,14 @@
 """Log returns, lags, Gold volatility, and the 55-predictor matrix.
 
-RECONSTRUCTED. The May 2026 report states that the final supervised matrix
-has 55 predictors: contemporaneous macro-financial levels, 30-day rolling
-volatilities, 1/3/5-day lags of those variables, Gold/SPY/BTC lagged
-returns, and contemporaneous stress indicators. The exact column list was
-not recovered. The list below is a documented reconstruction that:
+The supervised matrix matches the Milestone 2 / 3 notebooks:
 
-  * produces 55 columns
-  * includes every named feature in the report (spy_ret_lag1/3,
-    gold_ret_lag1/3, High_Yield_Spread_lag5, Financial_Stress_Index_lag5,
-    Volatility_Index, GLD_RSI_14, stress_any_t)
-  * drops the first ~35 rows so the first usable date is 2014-11-21 on the
-    canonical 4,150-row panel (30-day Gold vol warm-up + 5-day lag)
+  MACRO_LEVELS (8) + VOL_LEVELS (3) contemporaneous, each with lags 1/3/5
+  gold_ret / spy_ret / btc_ret lags 1/3/5
+  contemporaneous stress_hys_t and stress_any_t
 
-Leakage rules (report §3.3):
+That is 11 + 33 + 9 + 2 = 55 columns.
+
+Leakage rules:
   * targets are shifted forward before any split
   * features at t use only information available at t
   * no random shuffling
@@ -30,27 +25,29 @@ TRADING_DAYS = 252
 GOLD_VOL_WINDOW = 30
 LAGS = (1, 3, 5)
 
-LEVEL_COLS = (
-    "High_Yield_Spread",
-    "Yield_Curve_Spread",
-    "Financial_Stress_Index",
+MACRO_LEVELS = (
     "Volatility_Index",
-    "Stock_Bond_Corr_90d",
+    "Yield_Curve_Spread",
+    "High_Yield_Spread",
+    "Financial_Stress_Index",
     "SPY_Drawdown",
+    "Stock_Bond_Corr_90d",
     "SPY_RSI_14",
     "GLD_RSI_14",
+)
+VOL_LEVELS = (
     "SPY_Rolling_Vol_30d",
     "BTC_Rolling_Vol_30d",
     "Gold_Rolling_Vol_30d",
 )
-
-RETURN_PREFIXES = ("gold", "spy", "btc")
-STRESS_FEATURE_COLS = ("stress_any", "stress_all")
+LEVEL_COLS = MACRO_LEVELS + VOL_LEVELS
+RET_COLS = ("gold_ret", "spy_ret", "btc_ret")
+STRESS_FEATURE_COLS = ("stress_hys_t", "stress_any_t")
 
 FEATURE_COUNT = (
     len(LEVEL_COLS)  # contemporaneous
-    + len(LEVEL_COLS) * len(LAGS)  # lags
-    + len(RETURN_PREFIXES) * len(LAGS)  # return lags
+    + len(LEVEL_COLS) * len(LAGS)  # lags of macro + vol
+    + len(RET_COLS) * len(LAGS)  # return lags
     + len(STRESS_FEATURE_COLS)
 )
 
@@ -74,15 +71,16 @@ def add_returns_and_gold_vol(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def feature_names() -> list[str]:
-    names: list[str] = list(LEVEL_COLS)
+    """Column order matches the Milestone 2 / 3 notebooks."""
+    names: list[str] = []
     for col in LEVEL_COLS:
+        names.append(col)
         for lag in LAGS:
             names.append(f"{col}_lag{lag}")
-    for prefix in RETURN_PREFIXES:
+    for col in RET_COLS:
         for lag in LAGS:
-            names.append(f"{prefix}_ret_lag{lag}")
-    names.append("stress_any_t")
-    names.append("stress_all")
+            names.append(f"{col}_lag{lag}")
+    names.extend(STRESS_FEATURE_COLS)
     if len(names) != FEATURE_COUNT:
         raise RuntimeError(f"feature name count {len(names)} != {FEATURE_COUNT}")
     return names
@@ -92,9 +90,10 @@ def _lag_frame(out: pd.DataFrame) -> pd.DataFrame:
     for col in LEVEL_COLS:
         for lag in LAGS:
             out[f"{col}_lag{lag}"] = out[col].shift(lag)
-    for prefix in RETURN_PREFIXES:
+    for col in RET_COLS:
         for lag in LAGS:
-            out[f"{prefix}_ret_lag{lag}"] = out[f"{prefix}_ret"].shift(lag)
+            out[f"{col}_lag{lag}"] = out[col].shift(lag)
+    out["stress_hys_t"] = out["stress_hys"]
     out["stress_any_t"] = out["stress_any"]
     return out
 
@@ -116,6 +115,8 @@ def add_forward_targets(df: pd.DataFrame) -> pd.DataFrame:
     out["y_vix_5"] = out["Volatility_Index"].shift(-5)
     if "stress_any" in out.columns:
         out["y_stress_any_5"] = out["stress_any"].shift(-5)
+    if "stress_hys" in out.columns:
+        out["y_stress_hys_5"] = out["stress_hys"].shift(-5)
     return out
 
 

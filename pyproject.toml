@@ -5,11 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "macro-stress"
 version = "0.1.0"
-description = "Reconstructed CompSci 390B analysis: Gold, SPY, and Bitcoin under macro-financial stress."
+description = "CompSci 390B analysis: Gold, SPY, and Bitcoin under macro-financial stress."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
   { name = "Sebastian Vaskes Pimentel" },
+  { name = "Dhruv Kartik" },
 ]
 dependencies = [
   "numpy>=1.26",
@@ -17,10 +18,19 @@ dependencies = [
   "scikit-learn>=1.4",
   "xgboost>=2.0",
   "matplotlib>=3.8",
+  "seaborn>=0.13",
+  "scipy>=1.11",
+  "statsmodels>=0.14",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+notebook = [
+  "jupyter>=1.0",
+  "nbconvert>=7.0",
+  "ipykernel>=6.0",
+  "ipython>=8.0",
+]
 full = ["lightgbm>=4.0", "catboost>=1.2", "shap>=0.45", "imbalanced-learn>=0.12"]
 
 [project.scripts]

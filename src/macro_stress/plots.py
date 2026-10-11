@@ -1,4 +1,4 @@
-"""Figures for the reconstructed run. Original report figures stay in figures/."""
+"""Optional figure helpers. Notebooks produce the primary plots."""
 
 from __future__ import annotations
 
@@ -79,7 +79,7 @@ def plot_model_e_auc(rows: list[dict], path: Path) -> None:
     ax.bar(names, aucs, color="#7c3aed")
     ax.set_ylim(0.45, 0.75)
     ax.set_ylabel("ROC–AUC")
-    ax.set_title("Model E ranking (reconstructed run)")
+    ax.set_title("Model E ranking")
     ax.tick_params(axis="x", labelrotation=25)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)

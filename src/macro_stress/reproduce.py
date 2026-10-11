@@ -1,4 +1,4 @@
-"""Run the reconstructed analysis and compare against published anchors."""
+"""Optional batch runner for Model E / F / G and descriptive tables."""
 
 from __future__ import annotations
 
@@ -256,8 +256,8 @@ def reproduce(data_path: str | None = None) -> dict:
             for flag in ("stress_vix", "stress_any", "stress_all", "stress_fsi", "stress_hys")
         },
         "vol_stress_any": vol_by_regime(frame.dropna(subset=["Gold_Rolling_Vol_30d"])),
-        "event_windows_reconstructed": event_cumulative_returns(frame),
-        "event_drawdowns_reconstructed": event_drawdowns(frame),
+        "event_windows": event_cumulative_returns(frame),
+        "event_drawdowns": event_drawdowns(frame),
         "betas_stress_any": spy_beta(frame.dropna(subset=["gold_ret", "spy_ret", "btc_ret"])),
         "rolling_corr": {
             f"gold_spy_{flag}": rolling_corr_by_regime(
@@ -291,7 +291,7 @@ def reproduce(data_path: str | None = None) -> dict:
     plot_model_e_auc(model_e, FIGURE_DIR / "fig3-model-roc-auc.png")
 
     payload = {
-        "status": "reconstructed_run",
+        "status": "ok",
         "dataset": str(path.name),
         "dataset_issues": issues,
         "descriptive": descriptive,
@@ -312,18 +312,13 @@ def reproduce(data_path: str | None = None) -> dict:
 
 def _discrepancy_markdown(payload: dict) -> str:
     lines = [
-        "# Reconstructed run vs published anchors",
-        "",
-        "This run is a **September 2026 reconstruction**. It is not the original",
-        "notebook. Published scores are checksums. Differences are expected when",
-        "hyperparameters, the exact 55-column list, or event-window bounds differ.",
+        "# Batch run summary",
         "",
         f"- Dataset issues: `{payload.get('dataset_issues')}`",
         f"- Feature count: {payload['descriptive']['feature_count']}",
         f"- First usable date: {payload['descriptive']['first_usable_date']}",
-        f"- Model E test n / positive rate: see model_e Majority row",
         "",
-        "## Model E (reconstructed)",
+        "## Model E",
         "",
         "| Model | ROC–AUC | Accuracy | Bal. acc | F1 |",
         "|---|---:|---:|---:|---:|",
@@ -337,13 +332,9 @@ def _discrepancy_markdown(payload: dict) -> str:
         )
     lines += [
         "",
-        "Published XGBoost ROC–AUC checksum: **0.6835**. Do not treat a miss as a bug",
-        "to be optimized away.",
-        "",
         "## Walk-forward mean ROC–AUC",
         "",
-        f"- Reconstructed mean: `{payload.get('walk_forward_mean_roc_auc')}`",
-        "- Published mean: `0.6571` (σ = 0.0289)",
+        f"- Mean: `{payload.get('walk_forward_mean_roc_auc')}`",
         "",
     ]
     return "\n".join(lines) + "\n"

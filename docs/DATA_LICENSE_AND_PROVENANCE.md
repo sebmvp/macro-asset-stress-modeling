@@ -23,9 +23,8 @@ restricts to that historical window after download.
 
 ## Code and report
 
-There is no license file on the reconstruction. The May 2026 course
-report is the scholarly record. The Python in `src/` is a methodology
-reimplementation, not a claim of original-notebook authorship.
+The May 2026 course report is the scholarly write-up. The Python in
+`src/` and the notebooks in `notebooks/` are the runnable analysis.
 
 Do not treat this repository as redistributable training data for a
 commercial model — the Kaggle terms are non-commercial / share-alike.

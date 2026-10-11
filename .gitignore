@@ -16,3 +16,8 @@ data/*.zip
 # Local reproduce output (committed copies live under results/historical/)
 results/latest/
 figures/reproduced/
+
+figures/notebook/
+
+catboost_info/
+notebooks/catboost_info/
